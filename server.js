@@ -5,7 +5,8 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
-const connectDB = require('./config/database');
+ // Uncomment this line if you have a database connection setup
+// const connectDB = require('./config/database');
 const logger = require('./utils/logger');
 const errorHandler = require('./middleware/errorHandler');
 const authMiddleware = require('./middleware/auth');
@@ -20,8 +21,8 @@ const partnerRoutes = require('./routes/partner');
 // Initialize Express app
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// MongoDB Toogle
+// connectDB();
 
 // Security middleware
 app.use(helmet());

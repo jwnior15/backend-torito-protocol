@@ -9,29 +9,29 @@ const router = express.Router();
 // Exchange rate service
 class ExchangeRateService {
   constructor() {
-    this.apiUrl = process.env.EXCHANGE_RATE_API_URL;
-    this.apiKey = process.env.EXCHANGE_RATE_API_KEY;
+    // this.apiUrl = process.env.EXCHANGE_RATE_API_URL;
+    // this.apiKey = process.env.EXCHANGE_RATE_API_KEY;
   }
 
   async fetchUSDToBOBRate() {
     try {
       // First get USD to BOB rate from external API
-      const response = await axios.get(`${this.apiUrl}`, {
-        params: {
-          access_key: this.apiKey
-        },
-        timeout: 10000
-      });
+      // const response = await axios.get(`${this.apiUrl}`, {
+      //   params: {
+      //     access_key: this.apiKey
+      //   },
+      //   timeout: 10000
+      // });
 
-      if (!response.data || !response.data.rates || !response.data.rates.BOB) {
-        throw new Error('Invalid API response format');
-      }
+      // if (!response.data || !response.data.rates || !response.data.rates.BOB) {
+      //   throw new Error('Invalid API response format');
+      // }
 
       // Since USDT is pegged to USD, we can use USD rate
-      const usdToBobRate = response.data.rates.BOB;
+      // const usdToBobRate = response.data.rates.BOB;
       
       return {
-        rate: usdToBobRate,
+        rate: 14.0, // Hardcoded for example purposes, replace with actual API call
         source: 'api',
         metadata: {
           apiProvider: 'exchangerate-api',
