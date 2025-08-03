@@ -1,0 +1,68 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: torito-protocol-backend
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/execution-environment: gen2
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/memory: "512Mi"
+        run.googleapis.com/cpu: "1000m"
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "10"
+    spec:
+      containerConcurrency: 100
+      containers:
+      - image: gcr.io/YOUR_PROJECT_ID/torito-protocol-backend
+        ports:
+        - containerPort: 8080
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: SEPOLIA_RPC_URL
+          value: "https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID"
+        - name: AAVE_POOL_ADDRESS
+          value: "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951"
+        - name: USDT_ADDRESS
+          value: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0"
+        - name: AUSDT_ADDRESS
+          value: "0x978206fAe13faF5a8d293FB614326B237684B750"
+        - name: DEFAULT_LTV_RATIO
+          value: "0.75"
+        - name: MIN_LOAN_AMOUNT_BOB
+          value: "100"
+        - name: MAX_LOAN_AMOUNT_BOB
+          value: "50000"
+        - name: RATE_LIMIT_WINDOW_MS
+          value: "900000"
+        - name: RATE_LIMIT_MAX_REQUESTS
+          value: "100"
+        # Sensitive environment variables should be set via Cloud Run console or gcloud CLI
+        # - name: PRIVATE_KEY
+        #   value: "YOUR_PRIVATE_KEY"
+        # - name: SMART_CONTRACT_ADDRESS  
+        #   value: "YOUR_CONTRACT_ADDRESS"
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 3
+          periodSeconds: 3
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 30
+          failureThreshold: 3
